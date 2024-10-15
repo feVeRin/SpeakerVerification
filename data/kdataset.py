@@ -273,15 +273,3 @@ class asv_dataset(torch.utils.data.Dataset):
         
         return torch.FloatTensor(audio), self.label_list[idx]
     
-# =====================================
-# Paired Dataset for Testing
-# =====================================
-def paired_dataset(enroll_df, test_df):
-    df = test_df.copy()
-    
-    for idx, row in test_df.iterrows():
-        qry = "speaker == '{0}'".format(row.speakers)
-        gt_pair = enroll_df.query(qry)['wavfiles'].to_numpy()[0]
-        df.at[idx, 'pairings'] = gt_pair
-    
-    return df
