@@ -82,5 +82,8 @@ def validation(model, base_path, device):
     euc_eer, _ = compute_eer(euc_dist_list, valid_label)
     
     del enr_df
+    del cos_sim_list
+    del euc_dist_list
+    del valid_label
     
     return cos_eer, euc_eer
