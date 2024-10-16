@@ -240,7 +240,8 @@ class asv_dataset(torch.utils.data.Dataset):
         
         # load audio file
         wavfile = self.wav_file_list[idx]
-        audio, sr = sf.read(wavfile)
+        #audio, sr = sf.read(wavfile)
+        audio, sr = librosa.load(wavfile, sr=16000)
         audio_len = audio.shape[0] # 41440
         
         # =====================================
