@@ -57,15 +57,16 @@ def validation(model, base_path, device):
         
         del base_df
     
+    print('Model Validation..')    
     with torch.no_grad():
-        for _, row in enr_df.iterrows():
+        for _, row in tqdm.tqdm(enr_df.iterrows(), total = enr_df.shape[0]):
             enr_x, _ = sf.read(row['wavfiles'])
             enr_x = torch.FloatTensor(enr_x)
-            enr_emb = model(enr_x.to(device))
+            enr_emb = model(enr_x.unsqueeze(0).to(device))
             
             spk_x, _ = sf.read(row['cohort'])
             spk_x = torch.FloatTensor(enr_x)
-            spk_emb = model(spk_x.to(device))
+            spk_emb = model(spk_x.unsqueeze(0).to(device))
             
             valid_label.append(row['cohort_label'])
             
