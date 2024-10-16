@@ -90,7 +90,7 @@ def find_min_eer_values(logdir, tags):
     return df
 
 
-def get_model_param_mmac(model, input_size):
+def get_model_param_mmac(model, input_size, device):
     """
     Args:
         model: model
@@ -106,7 +106,7 @@ def get_model_param_mmac(model, input_size):
     MACs_ptflops, params_ptflops = MACs_ptflops.replace(" MMac", ""), params_ptflops.replace(" M", "")
 
     # thop
-    input = torch.randn(1, input_size)
+    input = torch.randn(1, input_size).to(device)
     MACs_thop, params_thop = profile(model_test, inputs=(input, ), verbose=False)
     MACs_thop, params_thop = MACs_thop/1e6, params_thop/1e6
 
