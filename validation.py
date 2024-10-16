@@ -8,7 +8,9 @@ from eval_metric import compute_eer
 from backend.cosine_similarity_full import cosine_similarity_full
 from backend.euclidean_distance_full import euclidean_distance_full
 
-
+# ===================
+# Make Enrollment Data
+# ===================
 def make_enrollment(gt_model, enr_df_path, base_df):
     enr_list = []
     enr_path = os.path.join(enr_df_path, 'enr_df.pkl')
@@ -42,6 +44,9 @@ def make_enrollment(gt_model, enr_df_path, base_df):
     
     return enr_df
 
+# ===================
+# Validation
+# ===================
 def validation(model, base_path, device):
     model.eval()
     
@@ -50,14 +55,16 @@ def validation(model, base_path, device):
     valid_label = []
     
     if os.path.isfile(os.path.join(base_path, 'enr_df.pkl')):
+        # if enrollment data exist
         enr_df = pd.read_pickle(os.path.join(base_path, 'enr_df.pkl'))
     else:
+        # if enrollment data not exist
         base_df = pd.read_pickle(os.path.join(base_path, 'train_df.pkl'))
         enr_df = make_enrollment(model, base_path, base_df)
         
         del base_df
     
-    print('Model Validation..')    
+    print('Model Validation..')
     with torch.no_grad():
         for _, row in tqdm.tqdm(enr_df.iterrows(), total = enr_df.shape[0]):
             enr_x, _ = sf.read(row['wavfiles'])
