@@ -78,14 +78,14 @@ def train(
     scheduler = scheduler(optimizer, step_size = 10, gamma = 0.8)
     
     # model summary
-    print()
     print('===============================')
+    print()
     print('Model Summary...')
     get_model_param_mmac(speaker_net, int(160*300 + 240), device)
     
     # model training
-    print()
     print('===============================')
+    print()
     print('Model Training...')
     
     if ckpt:
