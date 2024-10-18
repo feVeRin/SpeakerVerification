@@ -63,9 +63,9 @@ if __name__=='__main__':
         config = yaml.safe_load(file)
     ckpt_name = '00000.pt'
     
-    enroll_files = glob.glob('enroll/*.wav') ##speaker_.wav
+    enroll_files = glob.glob('enrollment/*.wav') ##speaker_.wav
     #test_audio = glob.glob('test/*.wav') #speaker_.wav
-    test_audio_file = '00000.wav'
+    test_audio_file = 'KHOtest.wav'
     
     model = load_model(config, ckpt_name, 'cuda')
     model.eval()
