@@ -11,7 +11,17 @@ from backend.euclidean_distance_full import euclidean_distance_full
 # ===================
 # Make Enrollment Data
 # ===================
-def make_enrollment(gt_model, enr_df_path, base_df):
+def make_enrollment(enr_df_path, base_df):
+    """
+    Make enrollment data
+    
+    Args:
+        enr_df_path : enrollment df file (.pkl) path
+        base_df : train df file (.pkl) path
+        
+    Returns:
+        enr_df : enrollment dataframe
+    """
     enr_list = []
     enr_path = os.path.join(enr_df_path, 'enr_df.pkl')
     
@@ -39,7 +49,6 @@ def make_enrollment(gt_model, enr_df_path, base_df):
     del base_df
     del enr_list
     del label_list
-    del gt_model
     del cohort_df
     
     return enr_df
@@ -48,22 +57,40 @@ def make_enrollment(gt_model, enr_df_path, base_df):
 # Validation
 # ===================
 def validation(model, base_path, device):
+    """
+    Model validation
+    
+    Args:
+        model : verification model (speaker_net)
+        base_path : df file path (train_df, enr_df)
+        device : device (CPU/GPU)
+        
+    Returns:
+        cos_eer : cosine eer
+        euc_eer : euclidean eer
+    """
     model.eval()
     
     cos_sim_list = []
     euc_dist_list = []
     valid_label = []
     
+    # ===================
+    # Make/Load Enrollments
+    # ===================
     if os.path.isfile(os.path.join(base_path, 'enr_df.pkl')):
         # if enrollment data exist
         enr_df = pd.read_pickle(os.path.join(base_path, 'enr_df.pkl'))
     else:
         # if enrollment data not exist
         base_df = pd.read_pickle(os.path.join(base_path, 'train_df.pkl'))
-        enr_df = make_enrollment(model, base_path, base_df)
+        enr_df = make_enrollment(base_path, base_df)
         
         del base_df
     
+    # ===================
+    # Model Validation
+    # ===================
     print('Model Validation..')
     with torch.no_grad():
         for _, row in tqdm.tqdm(enr_df.iterrows(), total = enr_df.shape[0]):
