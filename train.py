@@ -1,12 +1,7 @@
 import os
 import importlib
 import gc
-
 import torch
-import yaml
-import librosa
-import numpy as np
-import matplotlib.pyplot as plt
 
 from validation import *
 import data.kdataset as kdataset
@@ -27,8 +22,26 @@ def train(
     ckpt = False,
     ckpt_name = None
     ):
+    """
+    Model training wrapper
     
-    # dataset setting
+    Args:
+        config : configuration (.yaml)
+        max_epoch : max epoch size
+        batch_size : model batch size
+        num_worker : numbers of dataset loader worker
+        base_lr : learning rate
+        base_path : df file path (train_df, enr_df)
+        device : device (CPU/GPU)
+        ckpt : Continue training from the chekpoint (Default = False)
+        ckpt_name : Checkpoint (.pt) file name (Default = None)
+        
+    Returns:
+        None
+    """
+    # =====================================
+    # Dataset Setting
+    # =====================================
     print('Setting Train Dataset...')
     asv_dataset = kdataset.asv_dataset(*config['TRAIN_DATASET'].values())
     
@@ -41,7 +54,9 @@ def train(
         shuffle=True
     )
     
-    # model setting
+    # =====================================
+    # Model Setting
+    # =====================================
     print()
     print('Setting Model...')
     
@@ -77,13 +92,15 @@ def train(
     scheduler = importlib.import_module("scheduler." + 'steplr').__getattribute__("Scheduler")
     scheduler = scheduler(optimizer, step_size = 10, gamma = 0.8)
     
-    # model summary
+    # Model Summary
     print('===============================')
     print()
     print('Model Summary...')
     get_model_param_mmac(speaker_net, int(160*300 + 240), device)
     
-    # model training
+    # =====================================
+    # Model Training
+    # =====================================
     print('===============================')
     print()
     print('Model Training...')
@@ -135,7 +152,25 @@ def train_step(
     loss_function, 
     scheduler, 
     base_path, 
-    device):
+    device
+    ):
+    """
+    Training step
+    
+    Args:
+        config : configuration (.yaml)
+        epoch : current epoch
+        loader : train loader
+        model : verification model (speaker_net)
+        optimizer : optimizer
+        loss_function : loss function
+        scheduler : training scheduler
+        base_path : df file path (train_df, enr_df)
+        device : device (CPU/GPU)
+        
+    Returns:
+        None
+    """
     
     losses = 0
     model.train()
@@ -143,6 +178,9 @@ def train_step(
     gc.collect()
     torch.cuda.empty_cache()
     
+    # =====================================
+    # Model Training
+    # =====================================
     print('=== Epoch : {0} ==='.format(epoch))
     for idx, (x, y) in enumerate(loader):
         optimizer.zero_grad()
@@ -160,10 +198,15 @@ def train_step(
     scheduler.step()
     print('-- Epoch {0} loss : {1}'.format(epoch, losses/len(loader)))
     
-    # validation
+    # =====================================
+    # Validation
+    # =====================================
     cos_eer, euc_eer = validation(model, base_path, device)
     print('Cosine EER : {0}, Euclidean EER : {1}'.format(cos_eer, euc_eer))
     
+    # =====================================
+    # Chekpoint Saving
+    # =====================================
     ckpt_name = config['CHECKPOINT']['filename'].format(epoch)
     torch.save({'epoch' : epoch,
                 'model' : model.state_dict(),
