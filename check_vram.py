@@ -1,6 +1,15 @@
 import pynvml
 
-def check_vram(device=0) -> None:
+def check_vram(device=0):
+    '''
+    VRAM usage check
+    
+    Args:
+        device : device (CPU/GPU)
+        
+    Returns:
+        None
+    '''
     try:
         pynvml.nvmlInit()
         handle = pynvml.nvmlDeviceGetHandleByIndex(device)
