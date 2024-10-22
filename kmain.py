@@ -4,7 +4,7 @@ import glob
 import torch
 
 from train import train
-from test import load_model, load_audio
+from eval import load_model, load_audio
 import backend.cosine_similarity_full as csf
 
 if __name__ == '__main__':
