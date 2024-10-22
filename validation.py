@@ -17,8 +17,8 @@ def make_enrollment(enr_df_path, val_df):
     Make enrollment data
     
     Args:
-        enr_df_path : enrollment df file (.pkl) path
-        val_df : validation df file (.pkl) path
+        enr_df_path : enrollment df (.pkl) directory path
+        val_df : validation dataframe
         
     Returns:
         enr_df : enrollment dataframe
@@ -63,7 +63,7 @@ def validation(model, base_path, device):
     
     Args:
         model : verification model (speaker_net)
-        base_path : df file path (train_df, enr_df)
+        base_path : enr_df/test_df file (.pkl) directory path
         device : device (CPU/GPU)
         
     Returns:
@@ -85,7 +85,7 @@ def validation(model, base_path, device):
         # if enrollment data exist
         enr_df = pd.read_pickle(os.path.join(base_path, 'enr_df.pkl'))
     else:
-        # if enrollment data not exist
+        # if enrollment data does not exist
         val_df = pd.read_pickle(os.path.join(base_path, 'test_df.pkl'))
         enr_df = make_enrollment(base_path, val_df)
         
