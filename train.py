@@ -23,7 +23,8 @@ def train(
     ckpt_name = None
     ):
     """
-    Model training wrapper
+    Model training wrapper. 
+    Iterate train_step() with given max_epoch size 
     
     Args:
         config : configuration (.yaml)
@@ -201,8 +202,9 @@ def train_step(
     # =====================================
     # Validation
     # =====================================
-    cos_eer, euc_eer = validation(model, base_path, device)
+    cos_eer, euc_eer, cos_dcf, euc_dcf = validation(model, base_path, device)
     print('Cosine EER : {0}, Euclidean EER : {1}'.format(cos_eer, euc_eer))
+    print('Cosine MinDCF : {0}, Euclidean MinDCF : {1}'.format(cos_dcf, euc_dcf))
     
     # =====================================
     # Chekpoint Saving
@@ -215,6 +217,8 @@ def train_step(
                 'loss' : losses/len(loader),
                 'cos_eer' : cos_eer,
                 'euc_eer' : euc_eer,
+                'cos_dcf' : cos_dcf,
+                'euc_dcf' : euc_dcf,
                 }, os.path.join(config['CHECKPOINT']['ckpt_path'], ckpt_name))
     print('-- Epoch {0} ckpt saved..'.format(epoch))
     print()
