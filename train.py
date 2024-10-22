@@ -61,12 +61,15 @@ def train(
     print()
     print('Setting Model...')
     
+    # feature extractor
     feature_extractor = importlib.import_module('preprocessing.mel_transform').__getattribute__("feature_extractor")
     feature_extractor = feature_extractor(*config['FEATURE_EXTRACTOR'].values()).to(device)
     
+    # spectral augmentation
     spec_aug = importlib.import_module('preprocessing.spec_aug').__getattribute__("spec_aug")
     spec_aug = spec_aug(*config['SPEC_AUG'].values()).to(device)
     
+    # TDNN
     model_cfg = config['MODEL']
     model = importlib.import_module('models.NeXt_TDNN').__getattribute__("MainModel")
     model =  model(
@@ -75,21 +78,26 @@ def train(
         kernel_size = model_cfg['kernel_size'],
         block = model_cfg['block']).to(device)
     
+    # aggregation
     aggregation = importlib.import_module('aggregation.vap_bn_tanh_fc_bn').__getattribute__("Aggregation")
     aggregation = aggregation(*config['AGGREGATION'].values()).to(device)
     
+    # loss function
     loss_function = importlib.import_module("loss.aamsoftmax").__getattribute__("LossFunction")
     loss_function = loss_function(*config['LOSS'].values())
     
+    # model wrapper (SpeakerNet)
     speaker_net = SpeakerNet(feature_extractor = feature_extractor,
                              spec_aug = spec_aug, 
                              model = model,
                              aggregation = aggregation,
                              loss_function = loss_function).to(device)
     
+    # optimizer
     optimizer = importlib.import_module("optimizer." + 'adamw').__getattribute__("Optimizer")
     optimizer = optimizer(speaker_net.parameters(), lr = base_lr*batch_size, weight_decay = 0.01,)
     
+    # scheduler
     scheduler = importlib.import_module("scheduler." + 'steplr').__getattribute__("Scheduler")
     scheduler = scheduler(optimizer, step_size = 10, gamma = 0.8)
     
@@ -183,7 +191,8 @@ def train_step(
     # Model Training
     # =====================================
     print('=== Epoch : {0} ==='.format(epoch))
-    for idx, (x, y) in enumerate(loader):
+    pbar = tqdm.tqdm(loader)
+    for idx, (x, y) in enumerate(pbar):
         optimizer.zero_grad()
         
         spk_emb = model(x.to(device))
@@ -193,8 +202,8 @@ def train_step(
         loss.backward()
         optimizer.step()
         
-        if idx % 100 ==0:
-            print('{0} step loss : {1}'.format(idx, loss))
+        if idx % 1000 == 0:
+            pbar.set_postfix_str('{0} step loss : {1}'.format(idx, loss))
     
     scheduler.step()
     print('-- Epoch {0} loss : {1}'.format(epoch, losses/len(loader)))
