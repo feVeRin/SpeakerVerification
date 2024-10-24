@@ -12,10 +12,10 @@ if __name__ == '__main__':
     # Parameter Setting
     # =====================================
     CKPT = True
-    ckpt_name = 'ckpt_1.pt' ####
+    ckpt_name = 'ckpt_5.pt' ####
     
     print('Load yaml..')
-    with open('K_NeXt_TDNN.yaml') as file:
+    with open('./configs/K_NeXt_TDNN.yaml') as file:
         config = yaml.safe_load(file)
     
     BATCH_SIZE = config['PARAMS']['BATCH_SIZE']
