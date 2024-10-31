@@ -1,6 +1,6 @@
 # Korean Speaker Verification
 
-This repository is made for the Korean Speaker Verification task based on "NeXt-TDNN: Modernizing Multi-Scale Temporal Convolution Backbone for Speaker Verification" from ICASSP 2024. [[Official Repository](https://github.com/dmlguq456/NeXt_TDNN_ASV)] [[Paper Link](https://arxiv.org/pdf/2312.08603)]
+This repository is made for the **Korean Speaker Verification task** based on "*NeXt-TDNN: Modernizing Multi-Scale Temporal Convolution Backbone for Speaker Verification*" from ICASSP 2024. [[Official Repository](https://github.com/dmlguq456/NeXt_TDNN_ASV)] [[Paper Link](https://arxiv.org/pdf/2312.08603)]
 
 ## Dataset
 
