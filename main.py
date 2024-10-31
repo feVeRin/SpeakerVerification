@@ -4,7 +4,7 @@ import glob
 import torch
 
 from train import train
-from eval import load_model, load_audio
+from inference import load_model, load_audio
 import backend.cosine_similarity_full as csf
 
 if __name__ == '__main__':
@@ -38,7 +38,7 @@ if __name__ == '__main__':
         train(config, MAX_EPOCH, BATCH_SIZE, NUM_WORKER, BASE_LR, BASE_PATH, DEVICE)
     
     # =====================================
-    # Test
+    # Inference
     # =====================================
     regex = re.compile(r'(?<=\\)(.*?)(?=.wav)')
     enroll_files = glob.glob('enrollment/*.wav') 
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     test_audio = load_audio(test_audio_file, DEVICE)
     test_emb = model(test_audio.unsqueeze(0))
     
-    # Verification
+    # comparing with enrolled speakers
     score = {}
     with torch.no_grad():
         for enroll in enroll_files:
