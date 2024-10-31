@@ -18,8 +18,8 @@ For the augmentation, MUSAN dataset and Room Impulse Responses (RIR) dataset are
 - [MUSAN Dataset](https://www.openslr.org/17/)  
 - [RIR Dataset](https://www.openslr.org/28/)
 
-## Model Training & Test
-Run `main.py` for whole train/test process:
+## Model Training & Inference
+Run `main.py` for whole train/inference process:
 ```
 python main.py
 ```
