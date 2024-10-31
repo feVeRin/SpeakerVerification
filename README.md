@@ -23,5 +23,5 @@ Run `main.py` for whole train/test process:
 ```
 python main.py
 ```
-- Model configuration and settings are porvided as a `.yaml` file in the `configs` directory.
+- Model configuration and settings are provided as a `.yaml` file in the `configs` directory.
 - Please check `basic_training.ipynb` for simplified training.
